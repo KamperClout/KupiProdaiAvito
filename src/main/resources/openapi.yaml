@@ -1,0 +1,334 @@
+openapi: 3.0.1
+info:
+  title: Сервис купли-продажи
+  description: API для сервиса купли-продажи товаров
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/users/register:
+    post:
+      summary: Регистрация нового пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Успешная регистрация
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /api/users/login:
+    post:
+      summary: Аутентификация пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: Успешная аутентификация
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "User logged in"
+  /api/ads:
+    post:
+      summary: Создание объявления
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ad'
+      responses:
+        '200':
+          description: Объявление создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ad'
+    get:
+      summary: Получение списка объявлений
+      responses:
+        '200':
+          description: Список объявлений
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ad'
+  /api/ads/{id}:
+    get:
+      summary: Получение объявления по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Объявление найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ad'
+    delete:
+      summary: Удаление объявления
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Объявление удалено
+  /api/categories:
+    get:
+      summary: Получение списка категорий
+      responses:
+        '200':
+          description: Список категорий
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+    post:
+      summary: Создание категории
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        '200':
+          description: Категория создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+  /api/categories/{id}:
+    put:
+      summary: Обновление категории
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        '200':
+          description: Категория обновлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+    delete:
+      summary: Удаление категории
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Категория удалена
+  /api/admin/users:
+    post:
+      summary: Создание пользователя администратором
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Пользователь создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      summary: Удаление пользователя администратором
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Пользователь удален
+  /api/admin/users/{id}/role:
+    put:
+      summary: Изменение роли пользователя администратором
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleUpdate'
+      responses:
+        '200':
+          description: Роль пользователя обновлена
+  /api/admin/ads/{id}/status:
+    put:
+      summary: Изменение статуса объявления администратором
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdStatusUpdate'
+      responses:
+        '200':
+          description: Статус объявления обновлен
+  /api/workers/categories:
+    post:
+      summary: Управление категориями товаров (создание)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        '200':
+          description: Категория создана
+    put:
+      summary: Управление категориями товаров (редактирование)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        '200':
+          description: Категория обновлена
+  /api/workers/categories/{id}:
+    delete:
+      summary: Управление категориями товаров (удаление)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Категория удалена
+  /api/workers/ads/{id}/moderation:
+    put:
+      summary: Модерация объявлений
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Moderation'
+      responses:
+        '200':
+          description: Объявление модерировано
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        password:
+          type: string
+    UserLogin:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    Ad:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        price:
+          type: number
+          format: double
+        user:
+          $ref: '#/components/schemas/User'
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+    RoleUpdate:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [USER, ADMIN, WORKER, MANAGER]
+    AdStatusUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [IN_REVIEW, APPROVED, REJECTED, PUBLISHED]
+    Moderation:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [FROZEN, UNFROZEN]
+        reason:
+          type: string
