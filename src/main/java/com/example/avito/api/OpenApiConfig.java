@@ -29,8 +29,6 @@ public class OpenApiConfig {
                 Map<String, Object> yamlMap = yaml.load(inputStream);
 
                 OpenAPI openAPI = new OpenAPI().info(convertInfo((Map<String, Object>) yamlMap.get("info")));
-
-                // Convert paths
                 Paths paths = new Paths();
                 Map<String, Map<String, Object>> pathsMap = (Map<String, Map<String, Object>>) yamlMap.get("paths");
                 for (Map.Entry<String, Map<String, Object>> entry : pathsMap.entrySet()) {
@@ -39,7 +37,6 @@ public class OpenApiConfig {
                 }
                 openAPI.setPaths(paths);
 
-                // Convert components
                 Map<String, Object> componentsMap = (Map<String, Object>) yamlMap.get("components");
                 Components components = new Components();
                 Map<String, Schema> schemas = (Map<String, Schema>) componentsMap.get("schemas");

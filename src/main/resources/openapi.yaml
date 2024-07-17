@@ -1,13 +1,31 @@
 openapi: 3.0.1
 info:
   title: Сервис купли-продажи
-  description: API для сервиса купли-продажи товаров
+  description: API для сервиса купли-продажи товаров (аналог Avito)
   version: 1.0.0
 servers:
   - url: http://localhost:8080
+tags:
+  - name: Пользователь
+    description: Методы, доступные для пользователей
+  - name: Администратор
+    description: Методы, доступные администраторам
+  - name: Модератор
+    description: Методы, доступные модераторам
+  - name: Категории
+    description: Методы для управления категориями
+  - name: Объявления
+    description: Методы для управления объявлениями
+  - name: Сообщения
+    description: Методы для отправки и получения сообщений
+  - name: Отзывы
+    description: Методы для оставления отзывов и рейтингов
+
 paths:
   /api/users/register:
     post:
+      tags:
+        - Пользователь
       summary: Регистрация нового пользователя
       requestBody:
         required: true
@@ -24,6 +42,8 @@ paths:
                 $ref: '#/components/schemas/User'
   /api/users/login:
     post:
+      tags:
+        - Пользователь
       summary: Аутентификация пользователя
       requestBody:
         required: true
@@ -41,6 +61,8 @@ paths:
                 example: "User logged in"
   /api/ads:
     post:
+      tags:
+        - Объявления
       summary: Создание объявления
       requestBody:
         required: true
@@ -56,6 +78,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Ad'
     get:
+      tags:
+        - Объявления
       summary: Получение списка объявлений
       responses:
         '200':
@@ -68,6 +92,8 @@ paths:
                   $ref: '#/components/schemas/Ad'
   /api/ads/{id}:
     get:
+      tags:
+        - Объявления
       summary: Получение объявления по ID
       parameters:
         - name: id
@@ -83,6 +109,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Ad'
     delete:
+      tags:
+        - Объявления
       summary: Удаление объявления
       parameters:
         - name: id
@@ -95,6 +123,8 @@ paths:
           description: Объявление удалено
   /api/categories:
     get:
+      tags:
+        - Категории
       summary: Получение списка категорий
       responses:
         '200':
@@ -106,6 +136,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/Category'
     post:
+      tags:
+        - Категории
       summary: Создание категории
       requestBody:
         required: true
@@ -122,6 +154,8 @@ paths:
                 $ref: '#/components/schemas/Category'
   /api/categories/{id}:
     put:
+      tags:
+        - Категории
       summary: Обновление категории
       parameters:
         - name: id
@@ -143,6 +177,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Category'
     delete:
+      tags:
+        - Категории
       summary: Удаление категории
       parameters:
         - name: id
@@ -155,6 +191,8 @@ paths:
           description: Категория удалена
   /api/admin/users:
     post:
+      tags:
+        - Администратор
       summary: Создание пользователя администратором
       requestBody:
         required: true
@@ -169,7 +207,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+    get:
+      tags:
+        - Администратор
+      summary: Получение информации о пользователях
+      responses:
+        '200':
+          description: Список пользователей
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /api/admin/users/{id}:
     delete:
+      tags:
+        - Администратор
       summary: Удаление пользователя администратором
       parameters:
         - name: id
@@ -182,6 +236,8 @@ paths:
           description: Пользователь удален
   /api/admin/users/{id}/role:
     put:
+      tags:
+        - Администратор
       summary: Изменение роли пользователя администратором
       parameters:
         - name: id
@@ -200,6 +256,8 @@ paths:
           description: Роль пользователя обновлена
   /api/admin/ads/{id}/status:
     put:
+      tags:
+        - Администратор
       summary: Изменение статуса объявления администратором
       parameters:
         - name: id
@@ -218,6 +276,8 @@ paths:
           description: Статус объявления обновлен
   /api/workers/categories:
     post:
+      tags:
+        - Модератор
       summary: Управление категориями товаров (создание)
       requestBody:
         required: true
@@ -229,6 +289,8 @@ paths:
         '200':
           description: Категория создана
     put:
+      tags:
+        - Модератор
       summary: Управление категориями товаров (редактирование)
       requestBody:
         required: true
@@ -241,6 +303,8 @@ paths:
           description: Категория обновлена
   /api/workers/categories/{id}:
     delete:
+      tags:
+        - Модератор
       summary: Управление категориями товаров (удаление)
       parameters:
         - name: id
@@ -253,6 +317,8 @@ paths:
           description: Категория удалена
   /api/workers/ads/{id}/moderation:
     put:
+      tags:
+        - Модератор
       summary: Модерация объявлений
       parameters:
         - name: id
@@ -269,6 +335,68 @@ paths:
       responses:
         '200':
           description: Объявление модерировано
+  /api/messages:
+    post:
+      tags:
+        - Сообщения
+      summary: Отправка сообщения
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        '200':
+          description: Сообщение отправлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    get:
+      tags:
+        - Сообщения
+      summary: Получение сообщений
+      responses:
+        '200':
+          description: Список сообщений
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+  /api/reviews:
+    post:
+      tags:
+        - Отзывы
+      summary: Оставление отзыва
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Review'
+      responses:
+        '200':
+          description: Отзыв оставлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+    get:
+      tags:
+        - Отзывы
+      summary: Получение списка отзывов
+      responses:
+        '200':
+          description: Список отзывов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
 components:
   schemas:
     User:
@@ -303,6 +431,13 @@ components:
           format: double
         user:
           $ref: '#/components/schemas/User'
+        photo:
+          type: string
+          format: binary
+        reviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
     Category:
       type: object
       properties:
@@ -331,4 +466,28 @@ components:
           type: string
           enum: [FROZEN, UNFROZEN]
         reason:
+          type: string
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+        sender:
+          $ref: '#/components/schemas/User'
+        receiver:
+          $ref: '#/components/schemas/User'
+        content:
+          type: string
+    Review:
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        ad:
+          $ref: '#/components/schemas/Ad'
+        rating:
+          type: integer
+        comment:
           type: string
